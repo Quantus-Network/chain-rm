@@ -6818,6 +6818,7 @@ dependencies = [
  "pallet-timestamp",
  "parity-scale-codec",
  "scale-info",
+ "sp-common",
  "sp-core",
  "sp-io",
  "sp-runtime",
@@ -6835,6 +6836,7 @@ dependencies = [
  "pallet-preimage",
  "parity-scale-codec",
  "scale-info",
+ "sp-common",
  "sp-core",
  "sp-io",
  "sp-runtime",
@@ -8789,6 +8791,7 @@ dependencies = [
  "serde_json",
  "sp-api",
  "sp-block-builder",
+ "sp-common",
  "sp-consensus-qpow",
  "sp-core",
  "sp-faucet",
@@ -11066,6 +11069,16 @@ dependencies = [
  "sp-state-machine",
  "thiserror 1.0.69",
  "tracing",
+]
+
+[[package]]
+name = "sp-common"
+version = "0.1.0"
+dependencies = [
+ "frame-support",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-runtime",
 ]
 
 [[package]]

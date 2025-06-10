@@ -46,6 +46,7 @@ use pallet_ranked_collective::Linear;
 use pallet_referenda::impl_tracksinfo_get;
 use pallet_transaction_payment::{ConstFeeMultiplier, FungibleAdapter, Multiplier};
 use poseidon_resonance::PoseidonHasher;
+use qp_scheduler::BlockNumberOrTimestamp;
 use sp_runtime::traits::ConvertInto;
 use sp_runtime::{traits::One, Perbill, Permill};
 use sp_version::RuntimeVersion;
@@ -133,13 +134,18 @@ impl pallet_mining_rewards::Config for Runtime {
     type FeesToTreasuryPermill = MiningRewardsFeesToTreasury;
 }
 
+parameter_types! {
+    /// Target block time
+    pub const TargetBlockTime: u64 = 10000;
+}
+
 impl pallet_qpow::Config for Runtime {
     type RuntimeEvent = RuntimeEvent;
     type WeightInfo = pallet_qpow::DefaultWeightInfo;
     // NOTE: InitialDistance will be shifted left by this amount: higher is easier
     type InitialDistanceThresholdExponent = ConstU32<502>;
     type DifficultyAdjustPercentClamp = ConstU8<10>;
-    type TargetBlockTime = ConstU64<10000>;
+    type TargetBlockTime = TargetBlockTime;
     type AdjustmentPeriod = ConstU32<1>;
     type BlockTimeHistorySize = ConstU32<10>;
     type MaxReorgDepth = ConstU32<10>;
@@ -150,12 +156,15 @@ impl pallet_wormhole::Config for Runtime {
     type WeightInfo = pallet_wormhole::DefaultWeightInfo;
 }
 
+type Moment = u64;
+
 parameter_types! {
     pub const MinimumPeriod: u64 = 100;
 }
+
 impl pallet_timestamp::Config for Runtime {
     /// A timestamp: milliseconds since the unix epoch.
-    type Moment = u64;
+    type Moment = Moment;
     type OnTimestampSet = Scheduler;
     type MinimumPeriod = MinimumPeriod;
     type WeightInfo = ();
@@ -446,8 +455,8 @@ impl pallet_recovery::Config for Runtime {
 
 parameter_types! {
     pub const ReversibleTransfersPalletIdValue: PalletId = PalletId(*b"rtpallet");
-    pub const DefaultDelay: BlockNumber = 10;
-    pub const MinDelayPeriod: BlockNumber = 2;
+    pub const DefaultDelay: BlockNumberOrTimestamp<BlockNumber, Moment> = BlockNumberOrTimestamp::BlockNumber(DAYS);
+    pub const MinDelayPeriodBlocks: BlockNumber = 2;
     pub const MaxReversibleTransfers: u32 = 10;
 }
 
@@ -458,11 +467,14 @@ impl pallet_reversible_transfers::Config for Runtime {
     type BlockNumberProvider = System;
     type MaxPendingPerAccount = MaxReversibleTransfers;
     type DefaultDelay = DefaultDelay;
-    type MinDelayPeriod = MinDelayPeriod;
+    type MinDelayPeriodBlocks = MinDelayPeriodBlocks;
+    type MinDelayPeriodMoment = TargetBlockTime;
     type PalletId = ReversibleTransfersPalletIdValue;
     type Preimages = Preimage;
     type WeightInfo = pallet_reversible_transfers::weights::SubstrateWeight<Runtime>;
     type RuntimeHoldReason = RuntimeHoldReason;
+    type Moment = Moment;
+    type TimeProvider = Timestamp;
 }
 
 impl pallet_merkle_airdrop::Config for Runtime {

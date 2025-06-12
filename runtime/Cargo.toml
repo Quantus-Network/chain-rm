@@ -23,6 +23,7 @@ frame-system-benchmarking = { optional = true, workspace = true }
 frame-system-rpc-runtime-api.workspace = true
 frame-system.workspace = true
 frame-try-runtime = { optional = true, workspace = true }
+lazy_static.workspace = true
 log.workspace = true
 pallet-balances.workspace = true
 pallet-conviction-voting.workspace = true
@@ -183,6 +184,12 @@ try-runtime = [
 # `RUNTIME_METADATA_HASH` environment variable set for the `CheckMetadataHash`
 # extension.
 metadata-hash = ["substrate-wasm-builder/metadata-hash"]
+
+
+# Feature for running governance tests with production timing values
+# These tests use real mainnet timing (hours/days) instead of fast 2-block periods
+# Useful for comprehensive validation but much slower than default fast tests
+production-governance-tests = []
 
 # A convenience feature for enabling things when doing a build
 # for an on-chain release.

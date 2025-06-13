@@ -2,7 +2,7 @@
 mod tests {
     use crate::common::TestCommons;
     use frame_support::assert_ok;
-    use resonance_runtime::{Balances, Recovery, RuntimeCall, RuntimeOrigin};
+    use quantus_runtime::{Balances, Recovery, RuntimeCall, RuntimeOrigin};
     use sp_runtime::MultiAddress;
 
     #[test]
@@ -35,7 +35,7 @@ mod tests {
             let lost_account = TestCommons::account_id(1);
             let friend_account = TestCommons::account_id(2);
             let recovery_account = TestCommons::account_id(3);
-            let existential_deposit = resonance_runtime::EXISTENTIAL_DEPOSIT;
+            let existential_deposit = quantus_runtime::EXISTENTIAL_DEPOSIT;
 
             // Capture initial balances for later verification.
             let initial_lost_balance = Balances::free_balance(&lost_account);

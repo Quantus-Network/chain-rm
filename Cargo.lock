@@ -8176,6 +8176,7 @@ dependencies = [
  "rand 0.8.5",
  "reqwest",
  "resonance-miner-api",
+ "rusty-crystals-dilithium",
  "rusty-crystals-hdwallet",
  "sc-basic-authorship",
  "sc-cli",
@@ -8206,6 +8207,7 @@ dependencies = [
  "sp-timestamp",
  "substrate-build-script-utils",
  "substrate-frame-rpc-system",
+ "tempfile",
  "uuid",
 ]
 

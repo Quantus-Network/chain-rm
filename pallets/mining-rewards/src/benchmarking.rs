@@ -5,7 +5,7 @@ extern crate alloc;
 use super::*;
 use crate::Pallet as MiningRewards;
 use frame_benchmarking::{account, v2::*, BenchmarkError};
-use frame_support::traits::Currency;
+use frame_support::traits::fungible::{Inspect, Mutate};
 use frame_system::pallet_prelude::BlockNumberFor;
 use frame_system::Pallet as SystemPallet;
 use sp_consensus_pow::POW_ENGINE_ID;
@@ -20,7 +20,7 @@ mod benchmarks {
     use sp_runtime::Saturating;
 
     type BalanceOf<T> =
-        <<T as Config>::Currency as Currency<<T as frame_system::Config>::AccountId>>::Balance;
+        <<T as Config>::Currency as Inspect<<T as frame_system::Config>::AccountId>>::Balance;
 
     #[benchmark]
     fn on_finalize_rewarded_miner() -> Result<(), BenchmarkError> {
@@ -40,11 +40,11 @@ mod benchmarks {
             },
         );
 
-        // Pre-fund Treasury account to ensure it exists (optional, resolve_creating should handle)
+        // Pre-fund Treasury account to ensure it exists
         let treasury_account = T::TreasuryPalletId::get().into_account_truncating();
         let ed = T::Currency::minimum_balance();
-        T::Currency::make_free_balance_be(&treasury_account, ed.saturating_mul(1000u32.into()));
-        T::Currency::make_free_balance_be(&miner, ed.saturating_mul(1000u32.into()));
+        let _ = T::Currency::mint_into(&treasury_account, ed.saturating_mul(1000u32.into()));
+        let _ = T::Currency::mint_into(&miner, ed.saturating_mul(1000u32.into()));
 
         #[block]
         {

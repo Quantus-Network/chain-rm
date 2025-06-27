@@ -1,5 +1,6 @@
 use crate as pallet_qpow;
 use frame_support::pallet_prelude::{ConstU32, TypedGet};
+use frame_support::traits::ConstU128;
 use frame_support::traits::{ConstU64, ConstU8};
 use frame_support::{parameter_types, traits::Everything};
 use primitive_types::U512;
@@ -75,6 +76,8 @@ impl pallet_qpow::Config for Test {
     type AdjustmentPeriod = ConstU32<1>;
     type BlockTimeHistorySize = ConstU32<5>;
     type MaxReorgDepth = ConstU32<10>;
+    type FixedU128Scale = ConstU128<1_000_000_000_000_000_000>;
+    type MaxDistanceMultiplier = ConstU32<2>;
 }
 
 // Build genesis storage according to the mock runtime

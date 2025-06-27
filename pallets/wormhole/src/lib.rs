@@ -8,16 +8,20 @@ mod mock;
 #[cfg(test)]
 mod tests;
 
+pub type BalanceOf<T> = <T as pallet_balances::Config>::Balance;
+
 #[cfg(feature = "runtime-benchmarks")]
 mod benchmarking;
 
 #[frame_support::pallet]
 pub mod pallet {
+    use super::BalanceOf;
+    use alloc::vec::Vec;
     use codec::{Decode, Encode};
-    use frame_support::{pallet_prelude::*, traits::Currency};
+    use frame_support::{pallet_prelude::*, traits::fungible::Mutate};
     use frame_system::pallet_prelude::*;
     use lazy_static::lazy_static;
-    use pallet_balances::{Config as BalancesConfig, Pallet as BalancesPallet};
+    use pallet_balances::Pallet as BalancesPallet;
     use plonky2::{
         field::{goldilocks_field::GoldilocksField, types::PrimeField64},
         plonk::{
@@ -27,15 +31,16 @@ pub mod pallet {
         },
         util::serialization::DefaultGateSerializer,
     };
-    use sp_std::vec::Vec;
 
     #[pallet::pallet]
     pub struct Pallet<T>(_);
 
     #[pallet::config]
-    pub trait Config: frame_system::Config + TypeInfo + pallet_balances::Config {
+    pub trait Config: frame_system::Config + pallet_balances::Config {
+        /// Overarching runtime event type
         type RuntimeEvent: From<Event<Self>> + IsType<<Self as frame_system::Config>::RuntimeEvent>;
 
+        /// Weight information for pallet operations.
         type WeightInfo: WeightInfo;
 
         /// Account ID used as the "from" account when creating transfer proofs for minted tokens
@@ -150,9 +155,7 @@ pub mod pallet {
     #[pallet::event]
     #[pallet::generate_deposit(pub(super) fn deposit_event)]
     pub enum Event<T: Config> {
-        ProofVerified {
-            exit_amount: <T as BalancesConfig>::Balance,
-        },
+        ProofVerified { exit_amount: BalanceOf<T> },
     }
 
     #[pallet::error]
@@ -182,11 +185,6 @@ pub mod pallet {
                 })?;
 
             let public_inputs = WormholePublicInputs::<T>::from_fields(&proof.public_inputs)?;
-            // log::error!("{:?}", public_inputs.nullifier);
-            // log::error!("{:?}", public_inputs.exit_account);
-            // log::error!("{:?}", public_inputs.exit_amount);
-            // log::error!("{:?}", public_inputs.storage_root);
-            // log::error!("{:?}", public_inputs.fee_amount);
 
             // Verify nullifier hasn't been used
             ensure!(
@@ -202,25 +200,22 @@ pub mod pallet {
             // Mark nullifier as used
             UsedNullifiers::<T>::insert(public_inputs.nullifier, true);
 
-            // let exit_balance: <<T as Config>::Currency as Currency<<T as frame_system::Config>::AccountId>>::Balance
-            let exit_balance: <T as BalancesConfig>::Balance = public_inputs
+            let exit_balance = public_inputs
                 .exit_amount
                 .try_into()
                 .map_err(|_| "Conversion from u64 to Balance failed")?;
 
-            // Mint new tokens to the exit account
-            let _ =
-                BalancesPallet::<T>::deposit_creating(&public_inputs.exit_account, exit_balance);
+            BalancesPallet::<T, ()>::mint_into(&public_inputs.exit_account, exit_balance)?;
 
             // Create a transfer proof for the minted tokens
             let mint_account = T::MintingAccount::get();
-            BalancesPallet::<T>::store_transfer_proof(
+            BalancesPallet::<T, ()>::store_transfer_proof(
                 &mint_account,
                 &public_inputs.exit_account,
                 exit_balance,
             );
 
-            // // Emit event
+            // Emit event
             Self::deposit_event(Event::ProofVerified {
                 exit_amount: exit_balance,
             });

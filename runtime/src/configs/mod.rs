@@ -469,6 +469,7 @@ parameter_types! {
     pub const DefaultDelay: BlockNumberOrTimestamp<BlockNumber, Moment> = BlockNumberOrTimestamp::BlockNumber(DAYS);
     pub const MinDelayPeriodBlocks: BlockNumber = 2;
     pub const MaxReversibleTransfers: u32 = 10;
+    pub const MaxInterceptorAccounts: u32 = 32;
 }
 
 impl pallet_reversible_transfers::Config for Runtime {
@@ -486,6 +487,7 @@ impl pallet_reversible_transfers::Config for Runtime {
     type RuntimeHoldReason = RuntimeHoldReason;
     type Moment = Moment;
     type TimeProvider = Timestamp;
+    type MaxInterceptorAccounts = MaxInterceptorAccounts;
 }
 
 impl pallet_merkle_airdrop::Config for Runtime {
@@ -573,4 +575,14 @@ impl pallet_assets::Config for Runtime {
     type RemoveItemsLimit = frame_support::traits::ConstU32<1000>;
     #[cfg(feature = "runtime-benchmarks")]
     type BenchmarkHelper = ();
+}
+
+impl TryFrom<RuntimeCall> for pallet_balances::Call<Runtime> {
+    type Error = ();
+    fn try_from(call: RuntimeCall) -> Result<Self, Self::Error> {
+        match call {
+            RuntimeCall::Balances(c) => Ok(c),
+            _ => Err(()),
+        }
+    }
 }

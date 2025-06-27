@@ -49,6 +49,15 @@ mod runtime {
     pub type Balances = pallet_balances::Pallet<Test>;
 }
 
+impl From<RuntimeCall> for pallet_balances::Call<Test> {
+    fn from(call: RuntimeCall) -> Self {
+        match call {
+            RuntimeCall::Balances(c) => c,
+            _ => unreachable!(),
+        }
+    }
+}
+
 #[derive_impl(frame_system::config_preludes::TestDefaultConfig)]
 impl frame_system::Config for Test {
     type Block = Block;
@@ -112,6 +121,7 @@ parameter_types! {
     pub const MinDelayPeriodBlocks: u64 = 2;
     pub const MinDelayPeriodMoment: u64 = 2000;
     pub const MaxReversibleTransfers: u32 = 100;
+    pub const MaxInterceptorAccounts: u32 = 10;
 }
 
 impl pallet_reversible_transfers::Config for Test {
@@ -129,6 +139,7 @@ impl pallet_reversible_transfers::Config for Test {
     type WeightInfo = ();
     type Moment = Moment;
     type TimeProvider = MockTimestamp<Test>;
+    type MaxInterceptorAccounts = MaxInterceptorAccounts;
 }
 
 impl pallet_preimage::Config for Test {
@@ -180,6 +191,19 @@ pub fn new_test_ext() -> sp_io::TestExternalities {
             (4, 100_000_000_000),
             (255, 100_000_000_000),
             (256, 100_000_000_000),
+            // Test accounts for interceptor tests
+            (100, 100_000_000_000),
+            (101, 100_000_000_000),
+            (102, 100_000_000_000),
+            (103, 100_000_000_000),
+            (104, 100_000_000_000),
+            (105, 100_000_000_000),
+            (106, 100_000_000_000),
+            (107, 100_000_000_000),
+            (108, 100_000_000_000),
+            (109, 100_000_000_000),
+            (110, 100_000_000_000),
+            (111, 100_000_000_000),
         ],
     }
     .assimilate_storage(&mut t)

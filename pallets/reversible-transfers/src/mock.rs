@@ -3,7 +3,7 @@ use core::{cell::RefCell, marker::PhantomData};
 use crate as pallet_reversible_transfers;
 use frame_support::{
     derive_impl, ord_parameter_types, parameter_types,
-    traits::{EitherOfDiverse, EqualPrivilegeOnly, OnTimestampSet, Time},
+    traits::{EitherOfDiverse, EqualPrivilegeOnly, Time},
     PalletId,
 };
 use frame_system::{limits::BlockWeights, EnsureRoot, EnsureSignedBy};
@@ -95,8 +95,6 @@ where
         MOCKED_TIME.with(|v| {
             *v.borrow_mut() = now;
         });
-
-        pallet_scheduler::Pallet::<T>::on_timestamp_set(now.into());
     }
 
     /// Resets the timestamp to a default value (e.g., 0 or a specific starting time).

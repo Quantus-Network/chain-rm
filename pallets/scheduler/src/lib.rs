@@ -61,7 +61,6 @@
 
 #[cfg(feature = "runtime-benchmarks")]
 mod benchmarking;
-pub mod impls;
 #[cfg(test)]
 mod mock;
 #[cfg(test)]
@@ -991,7 +990,7 @@ impl<T: Config> Pallet<T> {
             BlockNumberOrTimestamp::<BlockNumberFor<T>, T::Moment>::Timestamp(current_time)
                 .normalize(T::TimestampBucketSize::get())
                 .as_timestamp()
-                .unwrap();
+                .unwrap_or(T::Moment::zero());
 
         let next_bucket = normalized_time.saturating_add(T::TimestampBucketSize::get());
 

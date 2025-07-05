@@ -78,7 +78,6 @@ parameter_types! {
     pub const MerkleAirdropPalletId: PalletId = PalletId(*b"airdrop!");
     pub const MaxProofs: u32 = 100;
     pub const UnsignedClaimPriority: u32 = 100;
-    pub MiningRewardsFeesToTreasury: Permill = Permill::from_percent(10);
 }
 
 /// The default types are being injected by [`derive_impl`](`frame_support::derive_impl`) from
@@ -129,11 +128,12 @@ impl pallet_faucet::Config for Runtime {
 
 impl pallet_mining_rewards::Config for Runtime {
     type RuntimeEvent = RuntimeEvent;
-    type WeightInfo = pallet_mining_rewards::weights::SubstrateWeight<Runtime>;
     type Currency = Balances;
-    type BlockReward = ConstU128<1_000_000_000_000>; // 1 token
+    type WeightInfo = pallet_mining_rewards::weights::SubstrateWeight<Runtime>;
+    type MinerBlockReward = ConstU128<10_000_000_000_000>; // 10 tokens
+    type TreasuryBlockReward = ConstU128<1_000_000_000_000>; // 1 token
     type TreasuryPalletId = TreasuryPalletId;
-    type FeesToTreasuryPermill = MiningRewardsFeesToTreasury;
+    type MintingAccount = MintingAccount;
 }
 
 parameter_types! {
@@ -156,13 +156,14 @@ impl pallet_qpow::Config for Runtime {
 }
 
 parameter_types! {
-     pub const WormholeMintingAccount: AccountId = AccountId::new([1u8; 32]);
+     pub const MintingAccount: AccountId = AccountId::new([1u8; 32]);
 }
 
 impl pallet_wormhole::Config for Runtime {
     type RuntimeEvent = RuntimeEvent;
+    type Currency = Balances;
     type WeightInfo = ();
-    type MintingAccount = WormholeMintingAccount;
+    type MintingAccount = MintingAccount;
 }
 
 type Moment = u64;

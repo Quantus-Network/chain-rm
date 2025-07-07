@@ -6776,6 +6776,7 @@ dependencies = [
  "pallet-preimage",
  "pallet-scheduler",
  "pallet-timestamp",
+ "pallet-utility",
  "parity-scale-codec",
  "qp-scheduler",
  "scale-info",

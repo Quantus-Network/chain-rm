@@ -17,10 +17,10 @@ pub use weights::*;
 pub mod pallet {
     use super::*;
     use codec::Decode;
+    use core::marker::PhantomData;
     use frame_support::pallet_prelude::*;
     use frame_support::traits::fungible::{Inspect, Mutate};
-    use frame_support::traits::{Defensive, Imbalance};
-    use frame_support::traits::{Get, OnUnbalanced};
+    use frame_support::traits::{Defensive, Get, Imbalance, OnUnbalanced};
     use frame_system::pallet_prelude::*;
     use qp_wormhole::TransferProofs;
     use sp_consensus_pow::POW_ENGINE_ID;

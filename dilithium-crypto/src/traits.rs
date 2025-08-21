@@ -8,10 +8,10 @@ use alloc::vec::Vec;
 use poseidon_resonance::PoseidonHasher;
 use sp_core::{
 	crypto::{Derive, Public, PublicBytes, Signature, SignatureBytes},
-	ByteArray, H256,
+	ByteArray, Hasher, H256,
 };
 use sp_runtime::{
-	traits::{Hash, IdentifyAccount, Verify},
+	traits::{IdentifyAccount, Verify},
 	AccountId32, CryptoType,
 };
 

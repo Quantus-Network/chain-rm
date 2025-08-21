@@ -13,14 +13,14 @@ sp-core = { workspace = true, default-features = false }
 sp-io = { workspace = true, default-features = false }
 sp-runtime = { workspace = true, default-features = false }
 sp-runtime-interface = { version = "29.0.0", default-features = false }
-thiserror = { version = "2.0.12", default-features = false }
+thiserror = { workspace = true, optional = true }
 
 [dev-dependencies]
-env_logger = "0.11.5"
+env_logger.workspace = true
 
 [features]
 default = ["std"]
-full_crypto = [ # pass through for "sign" in pair trait.
+full_crypto = [
 	"sp-core/full_crypto",
 ]
 serde = [
@@ -35,4 +35,5 @@ std = [
 	"sp-io/std",
 	"sp-runtime-interface/std",
 	"sp-runtime/std",
+	"thiserror",
 ]

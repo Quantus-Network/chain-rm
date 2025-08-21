@@ -46,6 +46,7 @@ use crate::worker::UntilImportedOrTimeout;
 use codec::{Decode, Encode};
 use futures::{Future, StreamExt};
 use log::*;
+use prometheus_endpoint::Registry;
 use sc_client_api::{self, backend::AuxStore, BlockOf, BlockchainEvents};
 use sc_consensus::{
 	BasicQueue, BlockCheckParams, BlockImport, BlockImportParams, BoxBlockImport,
@@ -63,7 +64,6 @@ use sp_runtime::{
 	traits::{Block as BlockT, Header as HeaderT},
 };
 use std::{cmp::Ordering, marker::PhantomData, sync::Arc, time::Duration};
-use substrate_prometheus_endpoint::Registry;
 
 const LOG_TARGET: &str = "pow";
 

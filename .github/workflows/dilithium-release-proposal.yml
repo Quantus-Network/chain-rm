@@ -152,21 +152,21 @@ jobs:
           git checkout -b "$branch_name"
           
           # Update dilithium-crypto version in its own Cargo.toml
-          echo "Updating dilithium-crypto/Cargo.toml to version: $new_cargo_version"
-          sed -i -E "s/^version\s*=\s*\"[0-9a-zA-Z.-]+\"/version = \"$new_cargo_version\"/" dilithium-crypto/Cargo.toml
+          echo "Updating primitives/dilithium-crypto/Cargo.toml to version: $new_cargo_version"
+          sed -i -E "s/^version\s*=\s*\"[0-9a-zA-Z.-]+\"/version = \"$new_cargo_version\"/" primitives/dilithium-crypto/Cargo.toml
           
-          # Verify the change in dilithium-crypto/Cargo.toml
-          if ! grep -q "version = \"$new_cargo_version\"" dilithium-crypto/Cargo.toml; then
-            echo "Error: Failed to update version in dilithium-crypto/Cargo.toml"
+          # Verify the change in primitives/dilithium-crypto/Cargo.toml
+          if ! grep -q "version = \"$new_cargo_version\"" primitives/dilithium-crypto/Cargo.toml; then
+            echo "Error: Failed to update version in primitives/dilithium-crypto/Cargo.toml"
             exit 1
           fi
           
           # Update qp-dilithium-crypto version in workspace Cargo.toml
           echo "Updating workspace Cargo.toml qp-dilithium-crypto dependency to version: $new_cargo_version"
-          sed -i -E "s/^qp-dilithium-crypto = \{ path = \"\.\/dilithium-crypto\", version = \"[0-9a-zA-Z.-]+\"/qp-dilithium-crypto = { path = \"\.\/dilithium-crypto\", version = \"$new_cargo_version\"/" Cargo.toml
+          sed -i -E "s/^qp-dilithium-crypto = \{ path = \"\.\/primitives\/dilithium-crypto\", version = \"[0-9a-zA-Z.-]+\"/qp-dilithium-crypto = { path = \"\.\/primitives\/dilithium-crypto\", version = \"$new_cargo_version\"/" Cargo.toml
           
           # Verify the change in workspace Cargo.toml
-          if ! grep -q "qp-dilithium-crypto = { path = \"./dilithium-crypto\", version = \"$new_cargo_version\"" Cargo.toml; then
+          if ! grep -q "qp-dilithium-crypto = { path = \"./primitives/dilithium-crypto\", version = \"$new_cargo_version\"" Cargo.toml; then
             echo "Error: Failed to update qp-dilithium-crypto version in workspace Cargo.toml"
             exit 1
           fi
@@ -178,7 +178,7 @@ jobs:
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
           
-          git add dilithium-crypto/Cargo.toml Cargo.toml Cargo.lock
+          git add primitives/dilithium-crypto/Cargo.toml Cargo.toml Cargo.lock
           git commit -m "ci: Dilithium version bump to $NEW_VERSION"
           git push origin "$branch_name"
 
@@ -198,7 +198,7 @@ jobs:
           This PR proposes releasing **qp-dilithium-crypto** version \`${new_cargo_version}\`.
           
           ### Changes
-          - Updated \`dilithium-crypto/Cargo.toml\` version to \`${new_cargo_version}\`
+          - Updated \`primitives/dilithium-crypto/Cargo.toml\` version to \`${new_cargo_version}\`
           - Updated \`Cargo.toml\` workspace dependency version to \`${new_cargo_version}\`
           - Updated \`Cargo.lock\`
           EOF

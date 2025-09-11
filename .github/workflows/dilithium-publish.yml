@@ -128,7 +128,7 @@ jobs:
 
       - name: Publish qp-dilithium-crypto to crates.io
         run: |
-          cd dilithium-crypto
+          cd primitives/dilithium-crypto
           cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }} --allow-dirty
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}

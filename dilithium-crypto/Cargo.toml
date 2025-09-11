@@ -4,7 +4,7 @@ categories = ["cryptography", "no-std"]
 description = "Dilithium post-quantum cryptographic signatures implementation for Substrate"
 documentation = "https://docs.rs/co-dilithium-crypto"
 edition = "2021"
-homepage = "https://github.com/quantus-labs/chain-rm"
+homepage = "https://github.com/quantus-network/chain-rm"
 keywords = [
 	"blockchain",
 	"cryptography",
@@ -15,8 +15,8 @@ keywords = [
 license = "MIT"
 name = "co-dilithium-crypto"
 readme = "README.md"
-repository = "https://github.com/quantus-labs/chain-rm"
-version = "0.0.2"
+repository = "https://github.com/quantus-network/chain-rm"
+version = "0.1.0"
 
 [dependencies]
 codec = { workspace = true, default-features = false }

@@ -105,48 +105,10 @@ jobs:
       - name: Build docs for dilithium-crypto
         run: cargo doc --locked --no-deps --package co-dilithium-crypto
 
-  create-dilithium-github-release:
-    name: 🚀 Create Dilithium GitHub Release
-    needs: [create-dilithium-tag, build-and-test-dilithium]
-    if: always() && needs.build-and-test-dilithium.result == 'success'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ needs.create-dilithium-tag.outputs.version }}
-          fetch-depth: 0
-          fetch-tags: true
-
-      - name: Create Dilithium GitHub Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.ADMIN_PAT }}
-          NEW_VERSION: ${{ needs.create-dilithium-tag.outputs.version }}
-        run: |
-          release_notes="Automated release for co-dilithium-crypto version $NEW_VERSION."
-          printf "%s" "$release_notes" > release_notes.txt
-
-          # Add draft flag if this is a draft release
-          if [[ "${{ needs.create-dilithium-tag.outputs.is_draft }}" == "true" ]]; then
-            DRAFT_FLAG="--draft"
-          else
-            DRAFT_FLAG=""
-          fi
-
-          echo "Creating dilithium release with DRAFT_FLAG: $DRAFT_FLAG"
-
-          gh release create "$NEW_VERSION" \
-            --repo "$GITHUB_REPOSITORY" \
-            --title "co-dilithium-crypto - $NEW_VERSION" \
-            --notes-file release_notes.txt \
-            --target main \
-            $DRAFT_FLAG
-
   publish-dilithium-to-crates:
     name: 📦 Publish to crates.io
-    needs: [create-dilithium-tag, create-dilithium-github-release]
-    if: always() && needs.create-dilithium-github-release.result == 'success' && needs.create-dilithium-tag.outputs.is_draft == 'false'
+    needs: [create-dilithium-tag]
+    if: always() && needs.create-dilithium-tag.outputs.is_draft == 'false'
     runs-on: ubuntu-latest
     environment: release
     permissions:

@@ -13,8 +13,8 @@ version = "0.1.5-morbo-fix"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
+co-dilithium-crypto.workspace = true
 codec = { features = ["derive"], workspace = true }
-dilithium-crypto.workspace = true
 frame-benchmarking.workspace = true
 frame-executive.workspace = true
 frame-metadata-hash-extension.workspace = true
@@ -72,7 +72,7 @@ sp-version = { features = ["serde"], workspace = true }
 substrate-wasm-builder = { optional = true, workspace = true, default-features = true }
 
 [dev-dependencies]
-dilithium-crypto.workspace = true
+co-dilithium-crypto.workspace = true
 env_logger.workspace = true
 sp-io.workspace = true
 sp-keyring = { workspace = true, features = ["std"] }
@@ -80,9 +80,9 @@ sp-keyring = { workspace = true, features = ["std"] }
 [features]
 default = ["std"]
 std = [
+	"co-dilithium-crypto/full_crypto",
+	"co-dilithium-crypto/std",
 	"codec/std",
-	"dilithium-crypto/full_crypto",
-	"dilithium-crypto/std",
 	"frame-benchmarking/std",
 	"frame-executive/std",
 	"frame-metadata-hash-extension/std",

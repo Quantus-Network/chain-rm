@@ -4,7 +4,7 @@ use crate::{
 	cli::{Cli, QuantusAddressType, QuantusKeySubcommand, Subcommand},
 	service,
 };
-use dilithium_crypto::{traits::WormholeAddress, DilithiumPair};
+use co_dilithium_crypto::{traits::WormholeAddress, DilithiumPair};
 use frame_benchmarking_cli::{BenchmarkCmd, ExtrinsicFactory, SUBSTRATE_REFERENCE_HARDWARE};
 use qp_rusty_crystals_hdwallet::{generate_mnemonic, wormhole::WormholePair, HDLattice};
 use quantus_runtime::{Block, EXISTENTIAL_DEPOSIT};

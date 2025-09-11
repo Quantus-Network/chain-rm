@@ -1,0 +1,121 @@
+name: Create Dilithium Release Proposal
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Dilithium version to release (e.g., 0.1.1)'
+        required: true
+        type: string
+      draft:
+        description: 'Create as draft release'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  create-dilithium-release-proposal:
+    name: Create Dilithium Release Proposal
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate version format
+        run: |
+          if [[ ! "${{ github.event.inputs.version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Error: Version must be in format X.Y.Z (e.g., 0.1.1)"
+            exit 1
+          fi
+
+      - name: Check if version already exists
+        run: |
+          VERSION="dilithium-v${{ github.event.inputs.version }}"
+          if git tag -l | grep -q "^${VERSION}$"; then
+            echo "Error: Tag $VERSION already exists"
+            exit 1
+          fi
+
+      - name: Update dilithium-crypto version
+        run: |
+          cd dilithium-crypto
+          sed -i 's/^version = ".*"/version = "${{ github.event.inputs.version }}"/' Cargo.toml
+          
+          # Verify the change
+          if ! grep -q 'version = "${{ github.event.inputs.version }}"' Cargo.toml; then
+            echo "Error: Failed to update version in Cargo.toml"
+            exit 1
+          fi
+          
+          echo "Updated dilithium-crypto version to ${{ github.event.inputs.version }}"
+
+      - name: Update Cargo.lock
+        run: |
+          cargo update --package co-dilithium-crypto
+
+      - name: Create release branch and commit
+        run: |
+          VERSION="dilithium-v${{ github.event.inputs.version }}"
+          BRANCH_NAME="release/${VERSION}"
+          
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git checkout -b "$BRANCH_NAME"
+          git add dilithium-crypto/Cargo.toml Cargo.lock
+          git commit -m "ci: Dilithium version bump to ${VERSION}"
+          git push origin "$BRANCH_NAME"
+
+      - name: Create pull request
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="dilithium-v${{ github.event.inputs.version }}"
+          BRANCH_NAME="release/${VERSION}"
+          
+          # Determine labels based on draft flag
+          if [[ "${{ github.event.inputs.draft }}" == "true" ]]; then
+            LABELS="dilithium-release-proposal,draft-release,automated"
+            TITLE="ci: Dilithium version bump to ${VERSION} (DRAFT)"
+          else
+            LABELS="dilithium-release-proposal,automated"
+            TITLE="ci: Dilithium version bump to ${VERSION}"
+          fi
+          
+          # Create PR body
+          cat > pr_body.md << EOF
+          ## Dilithium Crypto Release Proposal
+          
+          This PR proposes releasing **co-dilithium-crypto** version \`${{ github.event.inputs.version }}\`.
+          
+          ### Changes
+          - Updated \`dilithium-crypto/Cargo.toml\` version to \`${{ github.event.inputs.version }}\`
+          - Updated \`Cargo.lock\`
+          
+          ### Release Process
+          When this PR is merged, it will:
+          1. Create tag \`${VERSION}\`
+          2. Run tests and build checks
+          3. Create GitHub release
+          4. Publish to crates.io (if not draft)
+          
+          ### Checklist
+          - [ ] Version number is correct
+          - [ ] All tests pass
+          - [ ] Documentation is up to date
+          - [ ] CHANGELOG updated (if applicable)
+          
+          **Release Type:** ${{ github.event.inputs.draft == 'true' && 'Draft' || 'Production' }}
+          EOF
+          
+          gh pr create \
+            --title "$TITLE" \
+            --body-file pr_body.md \
+            --base main \
+            --head "$BRANCH_NAME" \
+            --label "$LABELS"

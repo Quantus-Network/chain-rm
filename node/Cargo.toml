@@ -17,8 +17,8 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 async-trait.workspace = true
 clap = { features = ["derive"], workspace = true }
+co-dilithium-crypto = { workspace = true }
 codec.workspace = true
-dilithium-crypto = { workspace = true }
 frame-benchmarking-cli.default-features = true
 frame-benchmarking-cli.workspace = true
 frame-metadata-hash-extension.default-features = true
@@ -109,8 +109,8 @@ tempfile = "3.0"
 [features]
 default = ["std"]
 std = [
+	"co-dilithium-crypto/std",
 	"codec/std",
-	"dilithium-crypto/std",
 	"hex/std",
 	"log/std",
 	"primitive-types/std",

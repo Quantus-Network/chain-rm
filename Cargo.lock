@@ -1495,6 +1495,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "co-dilithium-crypto"
+version = "0.1.0"
+dependencies = [
+ "env_logger 0.11.8",
+ "log",
+ "parity-scale-codec",
+ "qp-poseidon",
+ "qp-rusty-crystals-dilithium",
+ "scale-info",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
+ "thiserror 1.0.69",
+]
+
+[[package]]
 name = "coarsetime"
 version = "0.1.36"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2441,22 +2457,6 @@ dependencies = [
  "const-oid",
  "crypto-common",
  "subtle 2.6.1",
-]
-
-[[package]]
-name = "dilithium-crypto"
-version = "0.1.0"
-dependencies = [
- "env_logger 0.11.8",
- "log",
- "parity-scale-codec",
- "qp-poseidon",
- "qp-rusty-crystals-dilithium",
- "scale-info",
- "sp-core",
- "sp-io",
- "sp-runtime",
- "thiserror 1.0.69",
 ]
 
 [[package]]
@@ -8369,7 +8369,7 @@ version = "0.1.6"
 dependencies = [
  "async-trait",
  "clap",
- "dilithium-crypto",
+ "co-dilithium-crypto",
  "frame-benchmarking-cli",
  "frame-metadata-hash-extension",
  "frame-system",
@@ -8428,7 +8428,7 @@ dependencies = [
 name = "quantus-runtime"
 version = "0.1.5-morbo-fix"
 dependencies = [
- "dilithium-crypto",
+ "co-dilithium-crypto",
  "env_logger 0.11.8",
  "frame-benchmarking",
  "frame-executive",

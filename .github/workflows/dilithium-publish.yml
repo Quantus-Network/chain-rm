@@ -1,4 +1,4 @@
-name: Dlilithium - Release & Publish
+name: Dlilithium - Publish
 
 env:
   CARGO_INCREMENTAL: 0

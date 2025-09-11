@@ -1,4 +1,4 @@
-name: Quantus - Release & Publish
+name: Dlilithium - Release & Publish
 
 env:
   CARGO_INCREMENTAL: 0
@@ -100,7 +100,7 @@ jobs:
         run: cargo test --locked --release --package co-dilithium-crypto
 
       - name: Run clippy on dilithium-crypto
-        run: cargo clippy --locked --package co-dilithium-crypto -- -D warnings
+        run: cargo clippy --locked --package co-dilithium-crypto --no-deps -- -D warnings
 
       - name: Build docs for dilithium-crypto
         run: cargo doc --locked --no-deps --package co-dilithium-crypto

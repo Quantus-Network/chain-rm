@@ -1,5 +1,5 @@
-use codec::{Decode, Encode};
 use co_dilithium_crypto::{DilithiumSignatureScheme, DilithiumSignatureWithPublic, PUB_KEY_BYTES};
+use codec::{Decode, Encode};
 use sp_core::ByteArray;
 use sp_runtime::{
 	generic::{Preamble, UncheckedExtrinsic},

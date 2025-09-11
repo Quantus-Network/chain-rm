@@ -201,23 +201,6 @@ jobs:
           - Updated \`dilithium-crypto/Cargo.toml\` version to \`${new_cargo_version}\`
           - Updated \`Cargo.toml\` workspace dependency version to \`${new_cargo_version}\`
           - Updated \`Cargo.lock\`
-          
-          ### Release Process
-          When this PR is merged, it will:
-          1. Create tag \`${NEW_VERSION}\`
-          2. Run tests and build checks
-          3. Create GitHub release
-          4. Publish to crates.io (if not draft)
-          
-          ### Checklist
-          - [ ] Version number is correct
-          - [ ] All tests pass
-          - [ ] Documentation is up to date
-          - [ ] CHANGELOG updated (if applicable)
-          
-          **Release Type:** ${{ github.event.inputs.is_draft == 'true' && 'Draft' || 'Production' }}
-          **Version Type:** ${{ github.event.inputs.version_type }}
-          **Triggered by:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           EOF
           
           gh pr create \

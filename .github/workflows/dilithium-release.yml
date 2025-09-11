@@ -107,7 +107,7 @@ jobs:
 
   publish-dilithium-to-crates:
     name: 📦 Publish to crates.io
-    needs: [create-dilithium-tag]
+    needs: [create-dilithium-tag, build-and-test-dilithium]
     if: always() && needs.create-dilithium-tag.outputs.is_draft == 'false'
     runs-on: ubuntu-latest
     environment: release

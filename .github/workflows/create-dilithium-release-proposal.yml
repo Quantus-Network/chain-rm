@@ -1,21 +1,124 @@
 name: Create Dilithium Release Proposal
 
+env:
+  CARGO_TERM_COLOR: always
+
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: 'Dilithium version to release (e.g., 0.1.1)'
-        required: true
-        type: string
-      draft:
-        description: 'Create as draft release'
+      target_branch:
+        description: 'Target branch for the PR (default: main)'
         required: false
+        type: string
+        default: 'main'
+      version_type:
+        description: 'Type of version bump (major, minor, patch) or specify custom version'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+          - custom
+      custom_version:
+        description: 'Custom version string (e.g., 0.1.1). Only used if version_type is "custom". Do NOT include "dilithium-v" prefix'
+        required: false
+      is_draft:
+        description: 'Is this a draft release?'
+        required: true
         type: boolean
         default: false
 
 jobs:
-  create-dilithium-release-proposal:
-    name: Create Dilithium Release Proposal
+  calculate-next-dilithium-version:
+    name: 🧮 Calculate Next Dilithium Version
+    runs-on: ubuntu-latest
+    outputs:
+      new_version: ${{ steps.versioner.outputs.new_version }}
+      commit_sha_short: ${{ steps.vars.outputs.commit_sha_short }}
+      source_branch: ${{ steps.vars.outputs.source_branch }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Get current branch and commit SHA
+        id: vars
+        run: |
+          echo "commit_sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo "source_branch=$(git rev-parse --abbrev-ref HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Get latest dilithium tag
+        id: latest_tag
+        run: |
+          # Get all dilithium version tags and sort them by version
+          latest_dilithium_tag=$(git tag -l "dilithium-v[0-9]*.[0-9]*.[0-9]*" | sort -V | tail -n 1)
+          
+          # If no tags found, use default
+          if [ -z "$latest_dilithium_tag" ]; then
+            latest_dilithium_tag="dilithium-v0.0.0"
+          fi
+          
+          echo "latest_tag_found=$latest_dilithium_tag" >> $GITHUB_OUTPUT
+          echo "Latest dilithium tag found: $latest_dilithium_tag"
+
+      - name: Calculate new dilithium version
+        id: versioner
+        env:
+          LATEST_TAG: ${{ steps.latest_tag.outputs.latest_tag_found }}
+          VERSION_TYPE: ${{ github.event.inputs.version_type }}
+          CUSTOM_VERSION: ${{ github.event.inputs.custom_version }}
+          IS_DRAFT: ${{ github.event.inputs.is_draft }}
+        run: |
+          # Remove 'dilithium-v' prefix for processing
+          current_version=${LATEST_TAG#dilithium-v}
+
+          if [[ "$VERSION_TYPE" == "custom" ]]; then
+            if [[ -z "$CUSTOM_VERSION" ]]; then
+              echo "Error: Custom version is selected but no custom_version string provided."
+              exit 1
+            fi
+            if [[ ! "$CUSTOM_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo "Error: Custom version string must be in format X.Y.Z (e.g., 0.1.1)."
+              exit 1
+            fi
+            new_version="dilithium-v$CUSTOM_VERSION"
+          else
+            # Split version into components
+            IFS='.' read -r major minor patch <<< "$current_version"
+
+            # Increment based on type
+            if [[ "$VERSION_TYPE" == "major" ]]; then
+              if [[ "$major" == "0" ]]; then # Handle 0.x.y -> 0.(x+1).0
+                major=$major
+                minor=$((minor + 1))
+                patch=0
+              else
+                major=$((major + 1))
+                minor=0
+                patch=0
+              fi
+            elif [[ "$VERSION_TYPE" == "minor" ]]; then
+              minor=$((minor + 1))
+              patch=0
+            elif [[ "$VERSION_TYPE" == "patch" ]]; then
+              patch=$((patch + 1))
+            else
+              echo "Error: Invalid version_type: $VERSION_TYPE"
+              exit 1
+            fi
+            new_version="dilithium-v$major.$minor.$patch"
+          fi
+
+          echo "New dilithium version: $new_version"
+          echo "new_version=$new_version" >> $GITHUB_OUTPUT
+
+  update-dilithium-cargo-toml:
+    name: 📝 Update Dilithium Version Files
+    needs: calculate-next-dilithium-version
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -26,80 +129,71 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Validate version format
+      - name: Create dilithium version bump branch and PR
+        env:
+          NEW_VERSION: ${{ needs.calculate-next-dilithium-version.outputs.new_version }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SOURCE_BRANCH: ${{ needs.calculate-next-dilithium-version.outputs.source_branch }}
+          TARGET_BRANCH: ${{ github.event.inputs.target_branch }}
         run: |
-          if [[ ! "${{ github.event.inputs.version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "Error: Version must be in format X.Y.Z (e.g., 0.1.1)"
+          set -ex
+          # Remove 'dilithium-v' prefix for cargo version
+          new_cargo_version=${NEW_VERSION#dilithium-v}
+          branch_name="release/${NEW_VERSION}"
+
+          # Check if version already exists
+          if git tag -l | grep -q "^${NEW_VERSION}$"; then
+            echo "Error: Tag $NEW_VERSION already exists"
             exit 1
           fi
 
-      - name: Check if version already exists
-        run: |
-          VERSION="dilithium-v${{ github.event.inputs.version }}"
-          if git tag -l | grep -q "^${VERSION}$"; then
-            echo "Error: Tag $VERSION already exists"
-            exit 1
-          fi
-
-      - name: Update dilithium-crypto version
-        run: |
-          cd dilithium-crypto
-          sed -i 's/^version = ".*"/version = "${{ github.event.inputs.version }}"/' Cargo.toml
+          # Create new branch from source branch
+          git checkout "$SOURCE_BRANCH"
+          git checkout -b "$branch_name"
+          
+          # Update dilithium-crypto version
+          echo "Updating dilithium-crypto/Cargo.toml to version: $new_cargo_version"
+          sed -i -E "s/^version\s*=\s*\"[0-9a-zA-Z.-]+\"/version = \"$new_cargo_version\"/" dilithium-crypto/Cargo.toml
           
           # Verify the change
-          if ! grep -q 'version = "${{ github.event.inputs.version }}"' Cargo.toml; then
-            echo "Error: Failed to update version in Cargo.toml"
+          if ! grep -q "version = \"$new_cargo_version\"" dilithium-crypto/Cargo.toml; then
+            echo "Error: Failed to update version in dilithium-crypto/Cargo.toml"
             exit 1
           fi
           
-          echo "Updated dilithium-crypto version to ${{ github.event.inputs.version }}"
+          # Update Cargo.lock
+          cargo update --package co-dilithium-crypto --precise "$new_cargo_version" || echo "cargo update tried, proceeding."
 
-      - name: Update Cargo.lock
-        run: |
-          cargo update --package co-dilithium-crypto
-
-      - name: Create release branch and commit
-        run: |
-          VERSION="dilithium-v${{ github.event.inputs.version }}"
-          BRANCH_NAME="release/${VERSION}"
+          # Commit changes
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
           
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          
-          git checkout -b "$BRANCH_NAME"
           git add dilithium-crypto/Cargo.toml Cargo.lock
-          git commit -m "ci: Dilithium version bump to ${VERSION}"
-          git push origin "$BRANCH_NAME"
+          git commit -m "ci: Dilithium version bump to $NEW_VERSION"
+          git push origin "$branch_name"
 
-      - name: Create pull request
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          VERSION="dilithium-v${{ github.event.inputs.version }}"
-          BRANCH_NAME="release/${VERSION}"
-          
-          # Determine labels based on draft flag
-          if [[ "${{ github.event.inputs.draft }}" == "true" ]]; then
-            LABELS="dilithium-release-proposal,draft-release,automated"
-            TITLE="ci: Dilithium version bump to ${VERSION} (DRAFT)"
+          # Prepare PR title and labels
+          if [[ "${{ github.event.inputs.is_draft }}" == "true" ]]; then
+            PR_TITLE="ci: Dilithium version bump to $NEW_VERSION (DRAFT)"
+            PR_LABELS="automated,dilithium-release-proposal,draft-release"
           else
-            LABELS="dilithium-release-proposal,automated"
-            TITLE="ci: Dilithium version bump to ${VERSION}"
+            PR_TITLE="ci: Dilithium version bump to $NEW_VERSION"
+            PR_LABELS="automated,dilithium-release-proposal"
           fi
           
           # Create PR body
           cat > pr_body.md << EOF
           ## Dilithium Crypto Release Proposal
           
-          This PR proposes releasing **co-dilithium-crypto** version \`${{ github.event.inputs.version }}\`.
+          This PR proposes releasing **co-dilithium-crypto** version \`${new_cargo_version}\`.
           
           ### Changes
-          - Updated \`dilithium-crypto/Cargo.toml\` version to \`${{ github.event.inputs.version }}\`
+          - Updated \`dilithium-crypto/Cargo.toml\` version to \`${new_cargo_version}\`
           - Updated \`Cargo.lock\`
           
           ### Release Process
           When this PR is merged, it will:
-          1. Create tag \`${VERSION}\`
+          1. Create tag \`${NEW_VERSION}\`
           2. Run tests and build checks
           3. Create GitHub release
           4. Publish to crates.io (if not draft)
@@ -110,12 +204,14 @@ jobs:
           - [ ] Documentation is up to date
           - [ ] CHANGELOG updated (if applicable)
           
-          **Release Type:** ${{ github.event.inputs.draft == 'true' && 'Draft' || 'Production' }}
+          **Release Type:** ${{ github.event.inputs.is_draft == 'true' && 'Draft' || 'Production' }}
+          **Version Type:** ${{ github.event.inputs.version_type }}
+          **Triggered by:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           EOF
           
           gh pr create \
-            --title "$TITLE" \
+            --title "$PR_TITLE" \
             --body-file pr_body.md \
-            --base main \
-            --head "$BRANCH_NAME" \
-            --label "$LABELS"
+            --base "$TARGET_BRANCH" \
+            --head "$branch_name" \
+            --label "$PR_LABELS"

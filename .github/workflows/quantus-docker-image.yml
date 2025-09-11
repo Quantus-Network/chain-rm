@@ -1,4 +1,4 @@
-name: Chain - Docker Image
+name: Quantus - Docker Image
 
 on:
   workflow_dispatch:

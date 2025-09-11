@@ -1,4 +1,4 @@
-name: Dilithium - Release & Publish
+name: Quantus - Release & Publish
 
 env:
   CARGO_INCREMENTAL: 0

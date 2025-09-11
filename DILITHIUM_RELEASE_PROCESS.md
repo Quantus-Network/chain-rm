@@ -1,6 +1,6 @@
 # Dilithium Crypto Release Process
 
-This document describes the process for releasing the `co-dilithium-crypto` crate to crates.io with separate versioning and tagging.
+This document describes the process for releasing the `qp-dilithium-crypto` crate to crates.io with separate versioning and tagging.
 
 ## Overview
 
@@ -75,17 +75,17 @@ When the PR is merged, the **"Dilithium Crypto Release"** workflow automatically
 
 ## Package Metadata
 
-The `co-dilithium-crypto` package includes all required metadata for crates.io:
+The `qp-dilithium-crypto` package includes all required metadata for crates.io:
 
 ```toml
 [package]
-name = "co-dilithium-crypto"
+name = "qp-dilithium-crypto"
 version = "0.1.0"
 description = "Dilithium post-quantum cryptographic signatures implementation for Substrate"
 license = "MIT"
 repository = "https://github.com/quantus-labs/chain-rm"
 homepage = "https://github.com/quantus-labs/chain-rm"
-documentation = "https://docs.rs/co-dilithium-crypto"
+documentation = "https://docs.rs/qp-dilithium-crypto"
 authors = ["Quantus Labs"]
 keywords = ["dilithium", "post-quantum", "cryptography", "substrate", "blockchain"]
 categories = ["cryptography", "no-std"]
@@ -135,7 +135,7 @@ To release version `0.1.1`:
    - Create tag `dilithium-v0.1.1`
    - Run tests and checks
    - Create GitHub release
-   - Publish `co-dilithium-crypto` v0.1.1 to crates.io
+   - Publish `qp-dilithium-crypto` v0.1.1 to crates.io
 
 ## Files Created/Modified
 

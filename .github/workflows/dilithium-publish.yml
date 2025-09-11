@@ -94,16 +94,16 @@ jobs:
         run: rustup component add rust-src clippy
 
       - name: Build dilithium-crypto
-        run: cargo build --locked --release --package co-dilithium-crypto
+        run: cargo build --locked --release --package qp-dilithium-crypto
 
       - name: Test dilithium-crypto
-        run: cargo test --locked --release --package co-dilithium-crypto
+        run: cargo test --locked --release --package qp-dilithium-crypto
 
       - name: Run clippy on dilithium-crypto
-        run: cargo clippy --locked --package co-dilithium-crypto --no-deps -- -D warnings
+        run: cargo clippy --locked --package qp-dilithium-crypto --no-deps -- -D warnings
 
       - name: Build docs for dilithium-crypto
-        run: cargo doc --locked --no-deps --package co-dilithium-crypto
+        run: cargo doc --locked --no-deps --package qp-dilithium-crypto
 
   publish-dilithium-to-crates:
     name: 📦 Publish to crates.io
@@ -126,7 +126,7 @@ jobs:
             libclang-dev \
             protobuf-compiler
 
-      - name: Publish co-dilithium-crypto to crates.io
+      - name: Publish qp-dilithium-crypto to crates.io
         run: |
           cd dilithium-crypto
           cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }} --allow-dirty

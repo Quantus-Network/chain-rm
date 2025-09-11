@@ -13,7 +13,6 @@ version = "0.1.5-morbo-fix"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-co-dilithium-crypto.workspace = true
 codec = { features = ["derive"], workspace = true }
 frame-benchmarking.workspace = true
 frame-executive.workspace = true
@@ -45,6 +44,7 @@ pallet-utility.workspace = true
 pallet-vesting.workspace = true
 pallet-wormhole = { workspace = true, default-features = false }
 primitive-types.workspace = true
+qp-dilithium-crypto.workspace = true
 qp-poseidon = { workspace = true, features = ["serde"] }
 qp-scheduler.workspace = true
 qp-wormhole-circuit = { workspace = true, default-features = false }
@@ -72,16 +72,14 @@ sp-version = { features = ["serde"], workspace = true }
 substrate-wasm-builder = { optional = true, workspace = true, default-features = true }
 
 [dev-dependencies]
-co-dilithium-crypto.workspace = true
 env_logger.workspace = true
+qp-dilithium-crypto.workspace = true
 sp-io.workspace = true
 sp-keyring = { workspace = true, features = ["std"] }
 
 [features]
 default = ["std"]
 std = [
-	"co-dilithium-crypto/full_crypto",
-	"co-dilithium-crypto/std",
 	"codec/std",
 	"frame-benchmarking/std",
 	"frame-executive/std",
@@ -112,6 +110,8 @@ std = [
 	"pallet-vesting/std",
 	"pallet-wormhole/std",
 	"primitive-types/std",
+	"qp-dilithium-crypto/full_crypto",
+	"qp-dilithium-crypto/std",
 	"qp-poseidon/std",
 	"qp-scheduler/std",
 	"qp-wormhole-circuit/std",

@@ -1495,22 +1495,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "co-dilithium-crypto"
-version = "0.1.2"
-dependencies = [
- "env_logger 0.11.8",
- "log",
- "parity-scale-codec",
- "qp-poseidon",
- "qp-rusty-crystals-dilithium",
- "scale-info",
- "sp-core",
- "sp-io",
- "sp-runtime",
- "thiserror 1.0.69",
-]
-
-[[package]]
 name = "coarsetime"
 version = "0.1.36"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -8184,6 +8168,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "qp-dilithium-crypto"
+version = "0.1.0"
+dependencies = [
+ "env_logger 0.11.8",
+ "log",
+ "parity-scale-codec",
+ "qp-poseidon",
+ "qp-rusty-crystals-dilithium",
+ "scale-info",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
+ "thiserror 1.0.69",
+]
+
+[[package]]
 name = "qp-plonky2"
 version = "1.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -8369,7 +8369,6 @@ version = "0.1.6"
 dependencies = [
  "async-trait",
  "clap",
- "co-dilithium-crypto",
  "frame-benchmarking-cli",
  "frame-metadata-hash-extension",
  "frame-system",
@@ -8382,6 +8381,7 @@ dependencies = [
  "parity-scale-codec",
  "primitive-types 0.13.1",
  "prometheus",
+ "qp-dilithium-crypto",
  "qp-rusty-crystals-dilithium",
  "qp-rusty-crystals-hdwallet",
  "qp-wormhole-circuit-builder",
@@ -8428,7 +8428,6 @@ dependencies = [
 name = "quantus-runtime"
 version = "0.1.5-morbo-fix"
 dependencies = [
- "co-dilithium-crypto",
  "env_logger 0.11.8",
  "frame-benchmarking",
  "frame-executive",
@@ -8461,6 +8460,7 @@ dependencies = [
  "pallet-wormhole",
  "parity-scale-codec",
  "primitive-types 0.13.1",
+ "qp-dilithium-crypto",
  "qp-poseidon",
  "qp-scheduler",
  "qp-wormhole-circuit",

@@ -17,7 +17,6 @@ targets = ["x86_64-unknown-linux-gnu"]
 [dependencies]
 async-trait.workspace = true
 clap = { features = ["derive"], workspace = true }
-co-dilithium-crypto = { workspace = true }
 codec.workspace = true
 frame-benchmarking-cli.default-features = true
 frame-benchmarking-cli.workspace = true
@@ -35,6 +34,7 @@ pallet-transaction-payment-rpc.default-features = true
 pallet-transaction-payment-rpc.workspace = true
 primitive-types = { workspace = true, default-features = false }
 prometheus.workspace = true
+qp-dilithium-crypto = { workspace = true }
 qp-rusty-crystals-dilithium.workspace = true
 qp-rusty-crystals-hdwallet.workspace = true
 qpow-math.workspace = true
@@ -109,11 +109,11 @@ tempfile = "3.0"
 [features]
 default = ["std"]
 std = [
-	"co-dilithium-crypto/std",
 	"codec/std",
 	"hex/std",
 	"log/std",
 	"primitive-types/std",
+	"qp-dilithium-crypto/std",
 	"qp-wormhole-verifier/std",
 	"quantus-runtime/std",
 	"rand/std",

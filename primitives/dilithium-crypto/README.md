@@ -1,4 +1,4 @@
-# Dilithium Crypto
+# Quantus - Dilithium Crypto
 
 A Rust implementation of Dilithium post-quantum cryptographic signatures for Substrate-based blockchains.
 
@@ -19,13 +19,13 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-co-dilithium-crypto = "0.1.0"
+qp-dilithium-crypto = "0.1.0"
 ```
 
 ### Basic Example
 
 ```rust
-use co_dilithium_crypto::DilithiumSignature;
+use qp_dilithium_crypto::DilithiumSignature;
 
 // Example usage will be added here
 ```

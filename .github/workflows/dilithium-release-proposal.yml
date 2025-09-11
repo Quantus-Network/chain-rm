@@ -161,18 +161,18 @@ jobs:
             exit 1
           fi
           
-          # Update co-dilithium-crypto version in workspace Cargo.toml
-          echo "Updating workspace Cargo.toml co-dilithium-crypto dependency to version: $new_cargo_version"
-          sed -i -E "s/^co-dilithium-crypto = \{ path = \"\.\/dilithium-crypto\", version = \"[0-9a-zA-Z.-]+\"/co-dilithium-crypto = { path = \"\.\/dilithium-crypto\", version = \"$new_cargo_version\"/" Cargo.toml
+          # Update qp-dilithium-crypto version in workspace Cargo.toml
+          echo "Updating workspace Cargo.toml qp-dilithium-crypto dependency to version: $new_cargo_version"
+          sed -i -E "s/^qp-dilithium-crypto = \{ path = \"\.\/dilithium-crypto\", version = \"[0-9a-zA-Z.-]+\"/qp-dilithium-crypto = { path = \"\.\/dilithium-crypto\", version = \"$new_cargo_version\"/" Cargo.toml
           
           # Verify the change in workspace Cargo.toml
-          if ! grep -q "co-dilithium-crypto = { path = \"./dilithium-crypto\", version = \"$new_cargo_version\"" Cargo.toml; then
-            echo "Error: Failed to update co-dilithium-crypto version in workspace Cargo.toml"
+          if ! grep -q "qp-dilithium-crypto = { path = \"./dilithium-crypto\", version = \"$new_cargo_version\"" Cargo.toml; then
+            echo "Error: Failed to update qp-dilithium-crypto version in workspace Cargo.toml"
             exit 1
           fi
           
           # Update Cargo.lock
-          cargo update --package co-dilithium-crypto --precise "$new_cargo_version" || echo "cargo update tried, proceeding."
+          cargo update --package qp-dilithium-crypto --precise "$new_cargo_version" || echo "cargo update tried, proceeding."
 
           # Commit changes
           git config user.name "${{ github.actor }}"
@@ -195,7 +195,7 @@ jobs:
           cat > pr_body.md << EOF
           ## Dilithium Crypto Release Proposal
           
-          This PR proposes releasing **co-dilithium-crypto** version \`${new_cargo_version}\`.
+          This PR proposes releasing **qp-dilithium-crypto** version \`${new_cargo_version}\`.
           
           ### Changes
           - Updated \`dilithium-crypto/Cargo.toml\` version to \`${new_cargo_version}\`

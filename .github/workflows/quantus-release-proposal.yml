@@ -1,4 +1,4 @@
-name: Chain - Release Proposal
+name: Quantus - Release Proposal
 
 env:
   CARGO_TERM_COLOR: always

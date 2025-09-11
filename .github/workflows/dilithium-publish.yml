@@ -83,15 +83,8 @@ jobs:
         with:
           ref: ${{ needs.create-dilithium-tag.outputs.version }}
 
-      - name: Install dependencies
-        run: |
-          sudo apt-get update -yqq
-          sudo apt-get install -yqq --no-install-recommends \
-            libclang-dev \
-            protobuf-compiler
-
-      - name: Install required components
-        run: rustup component add rust-src clippy
+      - name: Setup Ubuntu
+        uses: ./.github/actions/ubuntu
 
       - name: Build dilithium-crypto
         run: cargo build --locked --release --package qp-dilithium-crypto
@@ -119,12 +112,8 @@ jobs:
         with:
           ref: ${{ needs.create-dilithium-tag.outputs.version }}
 
-      - name: Install dependencies
-        run: |
-          sudo apt-get update -yqq
-          sudo apt-get install -yqq --no-install-recommends \
-            libclang-dev \
-            protobuf-compiler
+      - name: Setup Ubuntu
+        uses: ./.github/actions/ubuntu
 
       - name: Publish qp-dilithium-crypto to crates.io
         run: |

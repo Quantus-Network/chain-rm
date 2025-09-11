@@ -1,4 +1,4 @@
-name: Dilithium Crypto Release
+name: Dilithium - Release & Publish
 
 env:
   CARGO_INCREMENTAL: 0
@@ -121,7 +121,7 @@ jobs:
 
       - name: Create Dilithium GitHub Release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ADMIN_PAT }}
           NEW_VERSION: ${{ needs.create-dilithium-tag.outputs.version }}
         run: |
           release_notes="Automated release for co-dilithium-crypto version $NEW_VERSION."

@@ -1,4 +1,4 @@
-name: Create Hotfix Release (Draft)
+name: Chain - Create Hotfix Release (Draft)
 
 on:
   workflow_dispatch:

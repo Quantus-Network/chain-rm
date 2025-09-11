@@ -99,7 +99,7 @@ wasm-timer = { version = "0.2.5" }
 zeroize = { version = "1.7.0", default-features = false }
 
 # Own dependencies
-co-dilithium-crypto = { path = "./dilithium-crypto", version = "0.1.0", default-features = false }
+co-dilithium-crypto = { path = "./dilithium-crypto", version = "0.0.1", default-features = false }
 pallet-balances = { path = "./pallets/balances", default-features = false }
 pallet-merkle-airdrop = { path = "./pallets/merkle-airdrop", default-features = false }
 pallet-mining-rewards = { path = "./pallets/mining-rewards", default-features = false }

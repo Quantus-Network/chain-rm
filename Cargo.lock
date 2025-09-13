@@ -1534,9 +1534,9 @@ dependencies = [
 
 [[package]]
 name = "comfy-table"
-version = "7.2.0"
+version = "7.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3f8e18d0dca9578507f13f9803add0df13362b02c501c1c17734f0dbb52eaf0b"
+checksum = "b03b7db8e0b4b2fdad6c551e634134e99ec000e5c8c3b6856c65e8bbaded7a3b"
 dependencies = [
  "unicode-segmentation",
  "unicode-width",
@@ -2441,22 +2441,6 @@ dependencies = [
  "const-oid",
  "crypto-common",
  "subtle 2.6.1",
-]
-
-[[package]]
-name = "dilithium-crypto"
-version = "0.1.0"
-dependencies = [
- "env_logger 0.11.8",
- "log",
- "parity-scale-codec",
- "qp-poseidon",
- "qp-rusty-crystals-dilithium",
- "scale-info",
- "sp-core",
- "sp-io",
- "sp-runtime",
- "thiserror 1.0.69",
 ]
 
 [[package]]
@@ -4129,9 +4113,9 @@ checksum = "df3b46402a9d5adb4c86a0cf463f42e19994e3ee891101b1841f30a545cb49a9"
 
 [[package]]
 name = "humantime"
-version = "2.2.0"
+version = "2.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9b112acc8b3adf4b107a8ec20977da0273a8c386765a3ec0229bd500a1443f9f"
+checksum = "135b12329e5e3ce057a9f972339ea52bc954fe1e9358ef27f95e89716fbc5424"
 
 [[package]]
 name = "hybrid-array"
@@ -8184,6 +8168,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "qp-dilithium-crypto"
+version = "0.1.0"
+dependencies = [
+ "env_logger 0.11.8",
+ "log",
+ "parity-scale-codec",
+ "qp-poseidon",
+ "qp-rusty-crystals-dilithium",
+ "scale-info",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
+ "thiserror 1.0.69",
+]
+
+[[package]]
 name = "qp-plonky2"
 version = "1.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -8369,7 +8369,6 @@ version = "0.1.6"
 dependencies = [
  "async-trait",
  "clap",
- "dilithium-crypto",
  "frame-benchmarking-cli",
  "frame-metadata-hash-extension",
  "frame-system",
@@ -8382,6 +8381,7 @@ dependencies = [
  "parity-scale-codec",
  "primitive-types 0.13.1",
  "prometheus",
+ "qp-dilithium-crypto",
  "qp-rusty-crystals-dilithium",
  "qp-rusty-crystals-hdwallet",
  "qp-wormhole-circuit-builder",
@@ -8428,7 +8428,6 @@ dependencies = [
 name = "quantus-runtime"
 version = "0.1.5-morbo-fix"
 dependencies = [
- "dilithium-crypto",
  "env_logger 0.11.8",
  "frame-benchmarking",
  "frame-executive",
@@ -8461,6 +8460,7 @@ dependencies = [
  "pallet-wormhole",
  "parity-scale-codec",
  "primitive-types 0.13.1",
+ "qp-dilithium-crypto",
  "qp-poseidon",
  "qp-scheduler",
  "qp-wormhole-circuit",
@@ -9093,7 +9093,7 @@ dependencies = [
  "once_cell",
  "ring 0.17.14",
  "rustls-pki-types",
- "rustls-webpki 0.103.4",
+ "rustls-webpki 0.103.5",
  "subtle 2.6.1",
  "zeroize",
 ]
@@ -9134,7 +9134,7 @@ dependencies = [
  "rustls",
  "rustls-native-certs",
  "rustls-platform-verifier-android",
- "rustls-webpki 0.103.4",
+ "rustls-webpki 0.103.5",
  "security-framework",
  "security-framework-sys",
  "webpki-root-certs 0.26.11",
@@ -9159,9 +9159,9 @@ dependencies = [
 
 [[package]]
 name = "rustls-webpki"
-version = "0.103.4"
+version = "0.103.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0a17884ae0c1b773f1ccd2bd4a8c72f16da897310a98b0e84bf349ad5ead92fc"
+checksum = "b5a37813727b78798e53c2bec3f5e8fe12a6d6f8389bf9ca7802add4c9905ad8"
 dependencies = [
  "ring 0.17.14",
  "rustls-pki-types",

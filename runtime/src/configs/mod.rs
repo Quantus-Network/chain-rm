@@ -75,7 +75,7 @@ parameter_types! {
 	pub const BlockHashCount: BlockNumber = 4096;
 	pub const Version: RuntimeVersion = VERSION;
 
-	/// We allow for 6 seconds of compute with a 20 second average block time.
+	/// We allow for 6 seconds of compute with a 12 second average block time.
 	pub RuntimeBlockWeights: BlockWeights = BlockWeights::with_sensible_defaults(
 		Weight::from_parts(6u64 * WEIGHT_REF_TIME_PER_SECOND, u64::MAX),
 		NORMAL_DISPATCH_RATIO,
@@ -144,16 +144,14 @@ parameter_types! {
 
 impl pallet_qpow::Config for Runtime {
 	// NOTE: InitialDistance will be shifted left by this amount: higher is easier
-	type InitialDistanceThresholdExponent = ConstU32<502>;
+	type InitialDistanceThresholdExponent = ConstU32<488>;
 	type DifficultyAdjustPercentClamp = ConstU8<10>;
 	type TargetBlockTime = TargetBlockTime;
-	type AdjustmentPeriod = ConstU32<1>;
-	// This is how many blocks to include for the difficulty adjustment
-	type BlockTimeHistorySize = ConstU32<10>;
 	type MaxReorgDepth = ConstU32<180>;
 	type FixedU128Scale = ConstU128<1_000_000_000_000_000_000>;
 	type MaxDistanceMultiplier = ConstU32<2>;
 	type WeightInfo = ();
+	type EmaAlpha = ConstU32<500>; // Exponent on moving average
 }
 
 parameter_types! {

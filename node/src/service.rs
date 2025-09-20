@@ -359,6 +359,10 @@ pub fn new_full<
 			let http_client = Client::new();
 			let mut current_job_id: Option<String> = None;
 
+			// Submit new mining job
+			let mut mining_start_time = std::time::Instant::now();
+			log::info!("Mining start time: {:?}", mining_start_time);
+
 			loop {
 				// Check for cancellation
 				if mining_cancellation_token.is_cancelled() {
@@ -439,7 +443,6 @@ pub fn new_full<
 					let job_id = Uuid::new_v4().to_string();
 					current_job_id = Some(job_id.clone());
 
-					// Submit new mining job
 					if let Err(e) = external_miner_client::submit_mining_job(
 						&http_client,
 						miner_url,
@@ -474,11 +477,12 @@ pub fn new_full<
 									if futures::executor::block_on(
 										worker_handle.submit(seal.encode()),
 									) {
-										log::info!("🥇Successfully mined and submitted a new block via external miner");
+										let mining_time = mining_start_time.elapsed().as_secs();
+										log::info!("🥇 Successfully mined and submitted a new block via external miner (mining time: {}s)", mining_time);
 										nonce = U512::one();
 									} else {
 										log::warn!(
-											"⛏️Failed to submit mined block from external miner"
+											"⛏️ Failed to submit mined block from external miner"
 										);
 										nonce += U512::one();
 									}
@@ -542,10 +546,13 @@ pub fn new_full<
 					};
 
 					let current_version = worker_handle.version();
+					// TODO: what does this check do?
 					if current_version == version {
 						if futures::executor::block_on(worker_handle.submit(nonce_bytes.encode())) {
-							log::info!("🥇Successfully mined and submitted a new block");
+							let mining_time = mining_start_time.elapsed().as_secs();
+							log::info!("🥇 Successfully mined and submitted a new block (mining time: {}s)", mining_time);
 							nonce = U512::one();
+							mining_start_time = std::time::Instant::now();
 						} else {
 							log::warn!("⛏️Failed to submit mined block");
 							nonce += U512::one();

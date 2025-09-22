@@ -87,16 +87,16 @@ jobs:
         uses: ./.github/actions/ubuntu
 
       - name: Build miner-api
-        run: cargo build --locked --release --package qu-miner-api
+        run: cargo build --locked --release --package quantus-miner-api
 
       - name: Test miner-api
-        run: cargo test --locked --release --package qu-miner-api
+        run: cargo test --locked --release --package quantus-miner-api
 
       - name: Run clippy on miner-api
-        run: cargo clippy --locked --package qu-miner-api --no-deps -- -D warnings
+        run: cargo clippy --locked --package quantus-miner-api --no-deps -- -D warnings
 
       - name: Build docs for miner-api
-        run: cargo doc --locked --no-deps --package qu-miner-api
+        run: cargo doc --locked --no-deps --package quantus-miner-api
 
   publish-miner-api-to-crates:
     name: 📦 Publish to crates.io
@@ -115,7 +115,7 @@ jobs:
       - name: Setup Ubuntu
         uses: ./.github/actions/ubuntu
 
-      - name: Publish qu-miner-api to crates.io
+      - name: Publish quantus-miner-api to crates.io
         run: |
           cd miner-api
           cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }} --allow-dirty

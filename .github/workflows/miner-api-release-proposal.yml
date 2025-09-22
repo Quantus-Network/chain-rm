@@ -161,18 +161,18 @@ jobs:
             exit 1
           fi
           
-          # Update qu-miner-api version in workspace Cargo.toml
-          echo "Updating workspace Cargo.toml qu-miner-api dependency to version: $new_cargo_version"
-          sed -i -E "s/^qu-miner-api = \{ path = \"\.\/miner-api\", version = \"[0-9]+\.[0-9]+\.[0-9]+\"/qu-miner-api = { path = \"\.\/miner-api\", version = \"$new_cargo_version\"/" Cargo.toml
+          # Update quantus-miner-api version in workspace Cargo.toml
+          echo "Updating workspace Cargo.toml quantus-miner-api dependency to version: $new_cargo_version"
+          sed -i -E "s/^quantus-miner-api = \{ path = \"\.\/miner-api\", version = \"[0-9]+\.[0-9]+\.[0-9]+\"/quantus-miner-api = { path = \"\.\/miner-api\", version = \"$new_cargo_version\"/" Cargo.toml
           
           # Verify the change in workspace Cargo.toml
-          if ! grep -q "qu-miner-api = { path = \"./miner-api\", version = \"$new_cargo_version\"" Cargo.toml; then
-            echo "Error: Failed to update qu-miner-api version in workspace Cargo.toml"
+          if ! grep -q "quantus-miner-api = { path = \"./miner-api\", version = \"$new_cargo_version\"" Cargo.toml; then
+            echo "Error: Failed to update quantus-miner-api version in workspace Cargo.toml"
             exit 1
           fi
           
           # Update Cargo.lock
-          cargo update --package qu-miner-api --precise "$new_cargo_version" || echo "cargo update tried, proceeding."
+          cargo update --package quantus-miner-api --precise "$new_cargo_version" || echo "cargo update tried, proceeding."
 
           # Commit changes
           git config user.name "${{ github.actor }}"
@@ -195,7 +195,7 @@ jobs:
           cat > pr_body.md << EOF
           ## Miner API Release Proposal
           
-          This PR proposes releasing **qu-miner-api** version \`${new_cargo_version}\`.
+          This PR proposes releasing **quantus-miner-api** version \`${new_cargo_version}\`.
           
           ### Changes
           - Updated \`miner-api/Cargo.toml\` version to \`${new_cargo_version}\`

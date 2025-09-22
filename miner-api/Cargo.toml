@@ -10,7 +10,7 @@ keywords = [
 	"substrate",
 ]
 license.workspace = true
-name = "qu-miner-api"
+name = "quantus-miner-api"
 repository.workspace = true
 version = "0.0.2"
 

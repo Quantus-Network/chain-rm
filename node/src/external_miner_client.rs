@@ -1,5 +1,5 @@
 use primitive_types::{H256, U512};
-use qu_miner_api::{ApiResponseStatus, MiningRequest, MiningResponse, MiningResult};
+use quantus_miner_api::{ApiResponseStatus, MiningRequest, MiningResponse, MiningResult};
 /// Functions to interact with the external miner service
 use reqwest::Client;
 

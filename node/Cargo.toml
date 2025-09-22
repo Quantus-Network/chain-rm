@@ -38,7 +38,7 @@ qp-dilithium-crypto = { workspace = true }
 qp-rusty-crystals-dilithium.workspace = true
 qp-rusty-crystals-hdwallet.workspace = true
 qpow-math.workspace = true
-qu-miner-api = { path = "../miner-api", version="0.0.1", default-features = false }
+qu-miner-api = { path = "../miner-api", version = "0.0.1", default-features = false }
 quantus-runtime.workspace = true
 rand = { workspace = true, default-features = false, features = [
 	"alloc",

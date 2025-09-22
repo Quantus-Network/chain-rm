@@ -178,7 +178,6 @@ mod benchmarks {
 		let recipient: T::AccountId = benchmark_account("recipient", 0, SEED);
 		fund_account::<T>(&recipient, BalanceOf::<T>::from(100u128)); // Fund recipient
 		let interceptor: T::AccountId = benchmark_account("interceptor", 1, SEED);
-		let recoverer: T::AccountId = benchmark_account("recoverer", 2, SEED);
 		let transfer_amount = 100u128;
 
 		// Setup owner as reversible and schedule a task in setup

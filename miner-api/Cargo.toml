@@ -10,9 +10,9 @@ keywords = [
 	"substrate",
 ]
 license.workspace = true
-name = "quantus-miner-api"
+name = "qu-miner-api"
 repository.workspace = true
-version = "0.1.0"
+version = "0.0.1"
 
 [dependencies]
 serde = { workspace = true, features = ["derive"] }

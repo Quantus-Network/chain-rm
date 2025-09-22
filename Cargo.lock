@@ -8970,7 +8970,7 @@ dependencies = [
 
 [[package]]
 name = "qu-miner-api"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "serde",
 ]
